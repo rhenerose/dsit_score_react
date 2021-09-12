@@ -40,7 +40,7 @@ function HomePage() {
                             rows.push(item as never);
                         }
                         results.meta.fields.forEach(col => {
-                            let item :GridColDef = { field: col, headerName: col, sortable: false, editable: false, resizable: true };
+                            let item :GridColDef = { field: col, headerName: col, sortable: false, editable: false};
                             columns.push(item as never);
                         })
                     }
