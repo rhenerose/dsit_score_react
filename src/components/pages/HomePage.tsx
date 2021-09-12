@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import './HomePage.css';
 import Dropzone from "react-dropzone";
 import { readString } from 'react-papaparse'
-import { DataGrid, GridColDef, GridValueGetterParams } from '@material-ui/data-grid';
+import { DataGrid, GridColDef } from '@material-ui/data-grid';
 
 import GenericTemplate from "../templates/GenericTemplate";
 
