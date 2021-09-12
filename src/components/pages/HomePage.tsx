@@ -9,8 +9,9 @@ import GenericTemplate from "../templates/GenericTemplate";
 function HomePage() {
     const [fileNames, setFileNames] = useState([]);
 
-    const [rows, setRows] = useState<[]>([]);
-    const [columns, setColumns] = useState<GridColDef[]>([]);
+    // const [rows, setRows] = useState<[]>([]);
+    // const [columns, setColumns] = useState<GridColDef[]>([]);
+    const [gridValues, setGridValues] = useState({rows: [] as [], columns: [] as GridColDef[]});
 
     const handleDrop = useCallback((acceptedFiles: any) => {
         console.log(acceptedFiles);
@@ -46,8 +47,9 @@ function HomePage() {
 
                     if (results.data.length)
                     {
-                        setColumns(columns);
-                        setRows(rows);
+                        // setColumns(columns);
+                        // setRows(rows);
+                        setGridValues({ ...gridValues, rows: rows, columns: columns });
                     }
                     console.log(results)
                 }
@@ -58,7 +60,7 @@ function HomePage() {
         {
             console.log("No accepted files!!");
         }
-    }, [])
+    }, [gridValues])
 
     return (
         <GenericTemplate title="Submit">
@@ -96,7 +98,7 @@ function HomePage() {
                 DataPreview
             </h1>
             <div style={{ height: 500, width: '100%' }}>
-                <DataGrid rows={rows} columns={columns} pageSize={50} />
+                <DataGrid rows={gridValues.rows} columns={gridValues.columns} pageSize={50} />
             </div>
         </GenericTemplate>
     );
