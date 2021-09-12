@@ -11,7 +11,7 @@ function HomePage() {
 
     // const [rows, setRows] = useState<[]>([]);
     // const [columns, setColumns] = useState<GridColDef[]>([]);
-    const [gridValues, setGridValues] = useState({rows: [] as [], columns: [] as GridColDef[]});
+    const [gridValues, setGridValues] = useState({rows: [] as any[], columns: [] as GridColDef[]});
 
     const handleDrop = useCallback((acceptedFiles: any) => {
         console.log(acceptedFiles);
@@ -28,7 +28,7 @@ function HomePage() {
                 if (bufferStr)
                 {
                     const results = readString(bufferStr.toString(), {header: true})
-                    const rows: [] = [];
+                    const rows: any[] = [];
                     const columns: GridColDef[] = []
                     if (results.meta.fields)
                     {
@@ -37,11 +37,11 @@ function HomePage() {
                         {
                             const item :any = results.data[id];
                             item["id"] = id;
-                            rows.push(item as never);
+                            rows.push(item);
                         }
                         results.meta.fields.forEach(col => {
                             const item :GridColDef = { field: col, headerName: col, sortable: false, editable: false};
-                            columns.push(item as never);
+                            columns.push(item);
                         })
                     }
 
