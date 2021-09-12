@@ -28,19 +28,19 @@ function HomePage() {
                 if (bufferStr)
                 {
                     const results = readString(bufferStr.toString(), {header: true})
-                    let rows: [] = [];
-                    let columns: GridColDef[] = []
+                    const rows: [] = [];
+                    const columns: GridColDef[] = []
                     if (results.meta.fields)
                     {
                         console.log(results.data)
                         for (let id = 0; id < results.data.length; id++)
                         {
-                            let item :any = results.data[id];
+                            const item :any = results.data[id];
                             item["id"] = id;
                             rows.push(item as never);
                         }
                         results.meta.fields.forEach(col => {
-                            let item :GridColDef = { field: col, headerName: col, sortable: false, editable: false};
+                            const item :GridColDef = { field: col, headerName: col, sortable: false, editable: false};
                             columns.push(item as never);
                         })
                     }
