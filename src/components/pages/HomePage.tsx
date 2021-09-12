@@ -1,0 +1,113 @@
+import React, { useState, useCallback } from "react";
+import './HomePage.css';
+import Dropzone from "react-dropzone";
+import { readString } from 'react-papaparse'
+import { DataGrid, GridColDef, GridValueGetterParams } from '@material-ui/data-grid';
+
+// const str = `Column 1,Column 2,Column 3,Column 4
+// 1-1,1-2,1-3,1-4
+// 2-1,2-2,2-3,2-4
+// 3-1,3-2,3-3,3-4
+// 4,5,6,7`
+
+// const results = readString(str)
+
+import GenericTemplate from "../templates/GenericTemplate";
+
+function HomePage() {
+    const [fileNames, setFileNames] = useState([]);
+
+    const [rows, setRows] = useState<[]>([]);
+    const [columns, setColumns] = useState<GridColDef[]>([]);
+
+    const handleDrop = useCallback((acceptedFiles: any) => {
+        console.log(acceptedFiles);
+        setFileNames(acceptedFiles.map((file: any) => file.path));
+        if(acceptedFiles.length > 0)
+        {
+            const file = acceptedFiles[0];
+            const reader = new FileReader()
+            reader.onabort = () => console.log('file reading was aborted')
+            reader.onerror = () => console.log('file reading has failed')
+            reader.onload = () => {
+                // Do whatever you want with the file contents
+                const bufferStr = reader.result
+                if (bufferStr)
+                {
+                    const results = readString(bufferStr.toString(), {header: true})
+                    let rows: [] = [];
+                    let columns: GridColDef[] = []
+                    if (results.meta.fields)
+                    {
+                        console.log(results.data)
+                        for (let id = 0; id < results.data.length; id++)
+                        {
+                            let item :any = results.data[id];
+                            item["id"] = id;
+                            rows.push(item as never);
+                        }
+                        results.meta.fields.forEach(col => {
+                            let item :GridColDef = { field: col, headerName: col, sortable: false, editable: false, resizable: true };
+                            columns.push(item as never);
+                        })
+                    }
+
+                    if (results.data.length)
+                    {
+                        setColumns(columns);
+                        setRows(rows);
+                    }
+                    console.log(results)
+                }
+            }
+            reader.readAsText(file)
+        }
+        else
+        {
+            console.log("No accepted files!!");
+        }
+    }, [])
+
+    return (
+        <GenericTemplate title="Submit">
+            <Dropzone
+                accept=".csv, text/csv"
+                onDrop={handleDrop}
+                multiple={false}
+                maxSize={1024000}   // max 1MB
+                >
+                {({
+                    getRootProps,
+                    getInputProps,
+                    isDragActive,
+                    isDragAccept,
+                    isDragReject
+                }) => (
+                    <div {...getRootProps({ className: "dropzone" })}>
+                        <input {...getInputProps()} />
+                        <span> 📁 </span>
+                        <p>CSVファイルをドロップするか、クリックしてファイルを選択してください</p>
+                    </div>
+                )}
+            </Dropzone>
+            <hr/>
+            <div>
+                <strong>Files:</strong>
+                <ul>
+                    {fileNames.map(fileName => (
+                        <li key={fileName}>{fileName}</li>
+                    ))}
+                </ul>
+            </div>
+            <hr/>
+            <h1>
+                DataPreview
+            </h1>
+            <div style={{ height: 500, width: '100%' }}>
+                <DataGrid rows={rows} columns={columns} pageSize={50} />
+            </div>
+        </GenericTemplate>
+    );
+};
+
+export default HomePage;
