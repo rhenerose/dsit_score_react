@@ -1,23 +1,139 @@
 import React, { useState, useCallback } from "react";
+import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import './HomePage.css';
 import Dropzone from "react-dropzone";
 import { readString } from 'react-papaparse'
 import { DataGrid, GridColDef } from '@material-ui/data-grid';
 
+import IconButton from '@material-ui/core/IconButton';
+import BackupIcon from '@material-ui/icons/Backup';
+import DoneIcon from '@material-ui/icons/Done';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
+
 import GenericTemplate from "../templates/GenericTemplate";
 
+type UploadAPI_JSON = {
+    message: string;
+    urls: [];
+}
+
+type FileList = {
+    name: string;
+    blob: Blob;
+}
+
 function HomePage() {
-    const [fileNames, setFileNames] = useState([]);
+    const [fileNames, setFileNames] = useState<FileList[]>([]);
 
     // const [rows, setRows] = useState<[]>([]);
     // const [columns, setColumns] = useState<GridColDef[]>([]);
     const [gridValues, setGridValues] = useState({rows: [] as any[], columns: [] as GridColDef[]});
 
+    const [commitEnabled, setCommitEnabled] = useState<boolean>(false);
+    const [isBusy, setIsBusy] = useState<boolean>(false);
+
+    // アップロード成功ハンドラ
+    function uploadSuccess(response: UploadAPI_JSON) {
+        console.log('Success:', response);
+        setCommitEnabled(false);    // 送信ボタン非活性
+
+        // APIから返ってきたJSON
+        const retJSON = JSON.stringify(response)
+        console.log(retJSON);
+
+        // let imageTag = ""
+        // let ret = allTags;
+        // response['urls'].forEach(
+        //     (element: string, index: number) => {
+        //         const historys = history.slice()
+        //         imageTag = `![](${element})`
+        //         setHistory(
+        //             historys.concat([{
+        //             url: element,
+        //             imageTag: imageTag,}
+        //         ]));
+        //         setResponseText(String(retJSON));
+
+        //         ret += `${imageTag}\r`
+        //     }
+        // );
+
+        // setAllTags(ret)
+    }
+
+    async function commit() {
+        if (!commitEnabled) {return;}
+
+        setCommitEnabled(false);    // 送信ボタン非活性
+
+        // get blob from url
+        // const blob = await fetch(fileNames[0]).then(r => r.blob());
+
+        const formData = new FormData();
+        const reader = new FileReader()
+        reader.onabort = () => console.log('file reading was aborted')
+        reader.onerror = () => console.log('file reading has failed')
+        reader.onload = () => {
+            const base64data = reader.result;
+            console.log(base64data);
+            formData.append('uploads', base64data, 'day7_submit.csv');
+        }
+        reader.readAsText(fileNames[0].blob)
+
+        // Call API
+        setIsBusy(true);
+        await fetch('http://localhost:7071/api/day7_r2_score', { method: 'POST', body: formData })
+        .then(response => {
+            if (response.ok) {
+                response.json().then(response => uploadSuccess(response))
+            } else {
+                throw new Error(`Status ${response.status} response`);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // setResponseText(String(error));
+        })
+        .finally(() => {
+            setIsBusy(false);
+        })
+        ;
+
+        return;
+    }
+
+    const SubmitButton = () => {
+        const useStyles = makeStyles((theme: Theme) =>
+        createStyles({
+            margin: {
+                margin: theme.spacing(1),
+            },
+            extendedIcon: {
+                marginRight: theme.spacing(1),
+            },
+            }),
+        );
+        const classes = useStyles();
+
+        return(
+            isBusy ?
+                <CircularProgress size={20} />
+            :
+                <IconButton size="medium" color="primary" onClick={() => commit()} disabled={!commitEnabled}  className={classes.margin}>
+                    <BackupIcon fontSize="medium"/>
+                </IconButton>
+        )
+    }
+
+
     const handleDrop = useCallback((acceptedFiles: any) => {
         console.log(acceptedFiles);
-        setFileNames(acceptedFiles.map((file: any) => file.path));
+        setFileNames(acceptedFiles.map((file: any) => ({"name": file.path, "blob": file})));
         if(acceptedFiles.length > 0)
         {
+            setCommitEnabled(true);
+
             const file = acceptedFiles[0];
             const reader = new FileReader()
             reader.onabort = () => console.log('file reading was aborted')
@@ -89,7 +205,7 @@ function HomePage() {
                 <strong>Files:</strong>
                 <ul>
                     {fileNames.map(fileName => (
-                        <li key={fileName}>{fileName}</li>
+                        <li key={fileName.name}>{fileName.name} <SubmitButton /></li>
                     ))}
                 </ul>
             </div>
