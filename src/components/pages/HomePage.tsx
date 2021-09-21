@@ -14,8 +14,9 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import GenericTemplate from "../templates/GenericTemplate";
 
 type UploadAPI_JSON = {
+    success: boolean;
     message: string;
-    urls: [];
+    score: number;
 }
 
 type FileList = {
@@ -41,6 +42,10 @@ function HomePage() {
         // APIから返ってきたJSON
         const retJSON = JSON.stringify(response)
         console.log(retJSON);
+
+        if (response['success'] == true) {
+
+        }
 
         // let imageTag = ""
         // let ret = allTags;
@@ -71,15 +76,7 @@ function HomePage() {
         // const blob = await fetch(fileNames[0]).then(r => r.blob());
 
         const formData = new FormData();
-        const reader = new FileReader()
-        reader.onabort = () => console.log('file reading was aborted')
-        reader.onerror = () => console.log('file reading has failed')
-        reader.onload = () => {
-            const base64data = reader.result;
-            console.log(base64data);
-            formData.append('uploads', base64data, 'day7_submit.csv');
-        }
-        reader.readAsText(fileNames[0].blob)
+        formData.append('uploads', fileNames[0].blob, 'day7_submit.csv');
 
         // Call API
         setIsBusy(true);
