@@ -7,11 +7,14 @@ import { DataGrid, GridColDef } from '@material-ui/data-grid';
 
 import IconButton from '@material-ui/core/IconButton';
 import BackupIcon from '@material-ui/icons/Backup';
-import DoneIcon from '@material-ui/icons/Done';
+import DoneIcon from '@material-ui/icons/CheckCircle';
+import ErrorIcon from '@material-ui/icons/HighlightOff';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 
 import GenericTemplate from "../templates/GenericTemplate";
+import AlertDialog from "../AlertDialog";
+
 
 type UploadAPI_JSON = {
     success: boolean;
@@ -33,6 +36,11 @@ function HomePage() {
 
     const [commitEnabled, setCommitEnabled] = useState<boolean>(false);
     const [isBusy, setIsBusy] = useState<boolean>(false);
+    const [isDone, setIsDone] = useState<boolean>(false);
+    const [isStop, setIsStop] = useState<boolean>(false);
+
+    const [resultDlg, setResultDlg] = useState<boolean>(false)
+    const [dialogValues, setDialogValues] = useState({title: "", msg: ""});
 
     // アップロード成功ハンドラ
     function uploadSuccess(response: UploadAPI_JSON) {
@@ -43,8 +51,17 @@ function HomePage() {
         const retJSON = JSON.stringify(response)
         console.log(retJSON);
 
-        if (response['success'] == true) {
-
+        if (response['success'] === true) {
+            setDialogValues({ ...dialogValues, title: "Score", msg: `データの送信が成功しました。\nScore: ${response.score.toFixed(3)}` });
+            setResultDlg(true);
+            setIsStop(false);
+            setIsDone(true);
+        }
+        else {
+            setDialogValues({ ...dialogValues, title: "Error", msg: response.message });
+            setResultDlg(true);
+            setIsStop(true);
+            setIsDone(false);
         }
 
         // let imageTag = ""
@@ -114,10 +131,14 @@ function HomePage() {
         const classes = useStyles();
 
         return(
+            isDone ? <DoneIcon color='primary' />
+            :
+            isStop ? <ErrorIcon color='secondary' />
+            :
             isBusy ?
                 <CircularProgress size={20} />
             :
-                <IconButton size="medium" color="primary" onClick={() => commit()} disabled={!commitEnabled}  className={classes.margin}>
+                <IconButton size="medium" color="secondary" onClick={() => commit()} disabled={!commitEnabled}  className={classes.margin}>
                     <BackupIcon fontSize="medium"/>
                 </IconButton>
         )
@@ -129,6 +150,8 @@ function HomePage() {
         setFileNames(acceptedFiles.map((file: any) => ({"name": file.path, "blob": file})));
         if(acceptedFiles.length > 0)
         {
+            setIsDone(false);
+            setIsStop(false);
             setCommitEnabled(true);
 
             const file = acceptedFiles[0];
@@ -213,6 +236,14 @@ function HomePage() {
             <div style={{ height: 500, width: '100%' }}>
                 <DataGrid rows={gridValues.rows} columns={gridValues.columns} pageSize={50} />
             </div>
+            <>
+                <AlertDialog
+                    title={dialogValues.title}
+                    msg={dialogValues.msg}
+                    isOpen={resultDlg}
+                    doButton1={() => {setResultDlg(false)}}
+                />
+            </>
         </GenericTemplate>
     );
 };
