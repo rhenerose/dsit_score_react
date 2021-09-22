@@ -108,6 +108,9 @@ function HomePage() {
         .catch(error => {
             console.error('Error:', error);
             // setResponseText(String(error));
+
+            setIsStop(true);
+            setIsDone(false);
         })
         .finally(() => {
             setIsBusy(false);
