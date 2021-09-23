@@ -14,7 +14,10 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import GenericTemplate from "../templates/GenericTemplate";
 import AlertDialog from "../AlertDialog";
+import RegistScore from "../RegistScore";
 
+// const API_ENDPOINT = "http://localhost:7071/api/day7_r2_score";
+const API_ENDPOINT = "https://dsit-score.azurewebsites.net/api/day7_r2_score";
 
 type UploadAPI_JSON = {
     success: boolean;
@@ -39,6 +42,8 @@ function HomePage() {
     const [isDone, setIsDone] = useState<boolean>(false);
     const [isStop, setIsStop] = useState<boolean>(false);
 
+    const [score, setScore] = useState<number>(0.0);
+
     const [resultDlg, setResultDlg] = useState<boolean>(false)
     const [dialogValues, setDialogValues] = useState({title: "", msg: ""});
 
@@ -56,12 +61,14 @@ function HomePage() {
             setResultDlg(true);
             setIsStop(false);
             setIsDone(true);
+            setScore(response.score)
         }
         else {
             setDialogValues({ ...dialogValues, title: "Error", msg: response.message });
             setResultDlg(true);
             setIsStop(true);
             setIsDone(false);
+            setScore(-1)
         }
 
         // let imageTag = ""
@@ -97,7 +104,7 @@ function HomePage() {
 
         // Call API
         setIsBusy(true);
-        await fetch('http://localhost:7071/api/day7_r2_score', { method: 'POST', body: formData })
+        await fetch(API_ENDPOINT, { method: 'POST', body: formData })
         .then(response => {
             if (response.ok) {
                 response.json().then(response => uploadSuccess(response))
@@ -134,7 +141,17 @@ function HomePage() {
         const classes = useStyles();
 
         return(
-            isDone ? <DoneIcon color='primary' />
+            isDone ?
+            <>
+                <DoneIcon color='primary' />
+                <div>
+                    <RegistScore
+                        score={score}
+                        email={""}
+                        endpoint={API_ENDPOINT}
+                    />
+                </div>
+            </>
             :
             isStop ? <ErrorIcon color='secondary' />
             :
