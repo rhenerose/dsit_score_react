@@ -2,8 +2,11 @@ import * as React from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import AlertDialog from "./AlertDialog";
+import { useHistory } from "react-router-dom";
 
 const RegistScore: React.FunctionComponent<{ score: any, email: any, endpoint: any }> = ({ score, email, endpoint }) => {
+
+    const history = useHistory();
 
     const [resultDlg, setResultDlg] = React.useState<boolean>(false)
     const [dialogValues, setDialogValues] = React.useState({ title: "", msg: "" });
@@ -18,6 +21,7 @@ const RegistScore: React.FunctionComponent<{ score: any, email: any, endpoint: a
         if (response['success'] === true) {
             setDialogValues({ ...dialogValues, title: "Score登録", msg: `登録に成功しました。` });
             setResultDlg(true);
+            history.push("/ranks", {"email": email});
         }
         else {
             setDialogValues({ ...dialogValues, title: "Error", msg: response.message });
