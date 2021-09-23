@@ -101,8 +101,8 @@ const RankPage: React.FC = () => {
     const formData = new FormData();
     formData.set('action', "query");
 
-    const API_ENDPOINT = "http://localhost:7071/api/day7_r2_score";
-    // const API_ENDPOINT = "https://dsit-score.azurewebsites.net/api/day7_r2_score";
+    // const API_ENDPOINT = "http://localhost:7071/api/day7_r2_score";
+    const API_ENDPOINT = "https://dsit-score.azurewebsites.net/api/day7_r2_score";
 
     async function doQuery() {
         await fetch(API_ENDPOINT, { method: 'POST', body: formData })
