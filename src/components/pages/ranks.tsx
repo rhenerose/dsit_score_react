@@ -9,31 +9,124 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 
-const createData = (
-    name: string,
-    category: string,
-    weight: number,
-    price: number
-) => {
-    return { name, category, weight, price };
-};
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import * as colors from "@material-ui/core/colors";
 
-const rows = [
-    createData("チョコレート", "お菓子", 100, 120),
-    createData("ケーキ", "お菓子", 400, 480),
-    createData("りんご", "フルーツ", 500, 360),
-    createData("バナナ", "フルーツ", 200, 300),
-    createData("みかん", "フルーツ", 250, 180),
-];
+const useStyles = makeStyles((theme) => ({
+    palette: {
+        primary: {
+            main: colors.blue[800],
+        },
+        type: "dark",
+    },
+    icon: {
+        marginRight: theme.spacing(2),
+    },
 
-const useStyles = makeStyles({
+    rightToolbar: {
+        marginLeft: "auto",
+        marginRight: -12
+    },
+    menuButton: {
+        marginRight: 16,
+        marginLeft: -12
+    },
+
+    heroContent: {
+        backgroundColor: theme.palette.background.paper,
+        padding: theme.spacing(8, 0, 6),
+    },
+    heroButtons: {
+        marginTop: theme.spacing(4),
+    },
+    cardGrid: {
+        paddingTop: theme.spacing(8),
+        paddingBottom: theme.spacing(8),
+    },
+    card: {
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+    },
+    cardMedia: {
+        paddingTop: '56.25%', // 16:9
+    },
+    cardContent: {
+        flexGrow: 1,
+    },
+    footer: {
+        backgroundColor: theme.palette.background.paper,
+        padding: theme.spacing(6),
+    },
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+    },
+
+    gridList: {
+        flexWrap: 'nowrap',
+        // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
+        transform: 'translateZ(0)',
+    },
+    title: {
+        color: theme.palette.primary.light,
+    },
+    titleBar: {
+        background:
+            'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
+    },
+
     table: {
         minWidth: 650,
     },
-});
+
+}));
 
 const RankPage: React.FC = () => {
     const classes = useStyles();
+    const [rows, setRows] = React.useState([] as any[]);
+    const [isOpen, setIsOpen] = React.useState(false);
+
+    function apiSuccess(response: any) {
+        console.log('Success:', response);
+
+        if (response['success'] === true) {
+            setRows(response['message']);
+        }
+        else {
+        }
+    }
+
+    const formData = new FormData();
+    formData.set('action', "query");
+
+    const API_ENDPOINT = "http://localhost:7071/api/day7_r2_score";
+    // const API_ENDPOINT = "https://dsit-score.azurewebsites.net/api/day7_r2_score";
+
+    async function doQuery() {
+        await fetch(API_ENDPOINT, { method: 'POST', body: formData })
+            .then(response => {
+                if (response.ok) {
+                    response.json().then(response => apiSuccess(response))
+                } else {
+                    throw new Error(`Status ${response.status} response`);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            })
+            .finally(() => {
+                setIsOpen(true)
+            })
+            ;
+    }
+
+    React.useEffect(() => {
+        if (!isOpen) {
+            doQuery();
+        }
+    }, [isOpen]);
 
     return (
         <GenericTemplate title="ランキング">
@@ -41,26 +134,30 @@ const RankPage: React.FC = () => {
                 <Table className={classes.table} aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell>商品名</TableCell>
-                            <TableCell align="right">カテゴリー</TableCell>
-                            <TableCell align="right">重量(g)</TableCell>
-                            <TableCell align="right">価格(円)</TableCell>
+                            <TableCell>ランク</TableCell>
+                            <TableCell>ユーザ</TableCell>
+                            <TableCell align="right">スコア</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows.map((row) => (
-                            <TableRow key={row.name}>
+                        {rows.map((row, idx) => (
+                            <TableRow key={row.RowKey}>
+                                <TableCell align="right">{idx + 1}</TableCell>
                                 <TableCell component="th" scope="row">
-                                    {row.name}
+                                    {row.RowKey}
                                 </TableCell>
-                                <TableCell align="right">{row.category}</TableCell>
-                                <TableCell align="right">{row.weight}</TableCell>
-                                <TableCell align="right">{row.price}</TableCell>
+                                <TableCell align="right">{Number(row.score).toFixed(3)}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
+
+            {/* プログレスダイアログ */}
+            <Backdrop className={classes.backdrop} open={!isOpen}>
+                <CircularProgress color="inherit" />
+            </Backdrop>
+
         </GenericTemplate>
     );
 };
