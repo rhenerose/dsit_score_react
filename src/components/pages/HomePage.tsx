@@ -194,6 +194,8 @@ function HomePage() {
         }
         else
         {
+            setDialogValues({ ...dialogValues, title: "Error", msg: "対応するファイルが見つかりません。" });
+            setResultDlg(true);
             console.log("No accepted files!!");
         }
     }, [gridValues])
