@@ -33,8 +33,6 @@ type FileList = {
 function HomePage() {
     const [fileNames, setFileNames] = useState<FileList[]>([]);
 
-    // const [rows, setRows] = useState<[]>([]);
-    // const [columns, setColumns] = useState<GridColDef[]>([]);
     const [gridValues, setGridValues] = useState({rows: [] as any[], columns: [] as GridColDef[]});
 
     const [commitEnabled, setCommitEnabled] = useState<boolean>(false);
@@ -70,25 +68,6 @@ function HomePage() {
             setIsDone(false);
             setScore(-1)
         }
-
-        // let imageTag = ""
-        // let ret = allTags;
-        // response['urls'].forEach(
-        //     (element: string, index: number) => {
-        //         const historys = history.slice()
-        //         imageTag = `![](${element})`
-        //         setHistory(
-        //             historys.concat([{
-        //             url: element,
-        //             imageTag: imageTag,}
-        //         ]));
-        //         setResponseText(String(retJSON));
-
-        //         ret += `${imageTag}\r`
-        //     }
-        // );
-
-        // setAllTags(ret)
     }
 
     async function commit() {
@@ -113,6 +92,9 @@ function HomePage() {
             }
         })
         .catch(error => {
+            setIsStop(true);
+            setIsDone(false);
+            alert(error.message);
             console.error('Error:', error);
             // setResponseText(String(error));
 
@@ -167,6 +149,7 @@ function HomePage() {
 
     const handleDrop = useCallback((acceptedFiles: any) => {
         console.log(acceptedFiles);
+        setGridValues({ ...gridValues, rows: [], columns: [] });
         setFileNames(acceptedFiles.map((file: any) => ({"name": file.path, "blob": file})));
         if(acceptedFiles.length > 0)
         {
@@ -214,6 +197,8 @@ function HomePage() {
         }
         else
         {
+            setDialogValues({ ...dialogValues, title: "Error", msg: "対応するファイルが見つかりません。" });
+            setResultDlg(true);
             console.log("No accepted files!!");
         }
     }, [gridValues])
