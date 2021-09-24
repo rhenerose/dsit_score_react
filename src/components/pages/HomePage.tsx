@@ -30,8 +30,6 @@ type FileList = {
 function HomePage() {
     const [fileNames, setFileNames] = useState<FileList[]>([]);
 
-    // const [rows, setRows] = useState<[]>([]);
-    // const [columns, setColumns] = useState<GridColDef[]>([]);
     const [gridValues, setGridValues] = useState({rows: [] as any[], columns: [] as GridColDef[]});
 
     const [commitEnabled, setCommitEnabled] = useState<boolean>(false);
@@ -63,25 +61,6 @@ function HomePage() {
             setIsStop(true);
             setIsDone(false);
         }
-
-        // let imageTag = ""
-        // let ret = allTags;
-        // response['urls'].forEach(
-        //     (element: string, index: number) => {
-        //         const historys = history.slice()
-        //         imageTag = `![](${element})`
-        //         setHistory(
-        //             historys.concat([{
-        //             url: element,
-        //             imageTag: imageTag,}
-        //         ]));
-        //         setResponseText(String(retJSON));
-
-        //         ret += `${imageTag}\r`
-        //     }
-        // );
-
-        // setAllTags(ret)
     }
 
     async function commit() {
