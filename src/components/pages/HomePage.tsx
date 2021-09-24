@@ -85,6 +85,9 @@ function HomePage() {
             }
         })
         .catch(error => {
+            setIsStop(true);
+            setIsDone(false);
+            alert(error.message);
             console.error('Error:', error);
             // setResponseText(String(error));
         })
