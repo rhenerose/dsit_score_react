@@ -126,6 +126,7 @@ function HomePage() {
 
     const handleDrop = useCallback((acceptedFiles: any) => {
         console.log(acceptedFiles);
+        setGridValues({ ...gridValues, rows: [], columns: [] });
         setFileNames(acceptedFiles.map((file: any) => ({"name": file.path, "blob": file})));
         if(acceptedFiles.length > 0)
         {
