@@ -89,14 +89,16 @@ const useStyles = makeStyles((theme) => ({
     tableRow: {
         "&$selected, &$selected:hover": {
             backgroundColor: "purple"
+        },
+        "&$hover:hover": {
+            backgroundColor: "blue"
         }
     },
     tableCell: {
         "$selected &": {
             color: "yellow"
         }
-    },
-    selected: {}
+    }
 
 }));
 
@@ -105,7 +107,7 @@ const RankPage: React.FC = () => {
     const classes = useStyles();
     const [rows, setRows] = React.useState([] as any[]);
     const [isOpen, setIsOpen] = React.useState(false);
-    const email = location.state ? (location.state.email ?? ""): "";
+    const email = location.state ? (location.state.email ?? "") : "";
 
     function apiSuccess(response: any) {
         console.log('Success:', response);
@@ -160,7 +162,12 @@ const RankPage: React.FC = () => {
                     </TableHead>
                     <TableBody>
                         {rows.map((row, idx) => (
-                            <TableRow key={row.RowKey} selected={email === row.RowKey}>
+                            <TableRow
+                                className={classes.tableRow}
+                                key={row.RowKey}
+                                selected={email === row.RowKey}
+                                hover
+                            >
                                 <TableCell align="left">{idx + 1}</TableCell>
                                 <TableCell component="th" scope="row">
                                     {row.RowKey}
