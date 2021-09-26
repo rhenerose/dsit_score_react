@@ -100,12 +100,7 @@ const RankPage: React.FC = () => {
     const classes = useStyles();
     const [rows, setRows] = React.useState([] as any[]);
     const [isOpen, setIsOpen] = React.useState(false);
-    const email = !location.state ? "" :
-        location.state.email ?
-            location.state.email
-            :
-            ""
-        ;
+    const email = location.state ? (location.state.email ?? ""): "";
 
     function apiSuccess(response: any) {
         console.log('Success:', response);
