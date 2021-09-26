@@ -78,8 +78,13 @@ const useStyles = makeStyles((theme) => ({
             'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
     },
 
+    tableContainer: {
+        // maxWidth: 550,
+        minWidth: 350,
+    },
     table: {
-        minWidth: 650,
+        maxWidth: 500,
+        minWidth: 300,
     },
     tableRow: {
         "&$selected, &$selected:hover": {
@@ -144,7 +149,7 @@ const RankPage: React.FC = () => {
 
     return (
         <GenericTemplate title="ランキング">
-            <TableContainer component={Paper}>
+            <TableContainer className={classes.tableContainer} component={Paper}>
                 <Table className={classes.table} aria-label="simple table">
                     <TableHead>
                         <TableRow>
