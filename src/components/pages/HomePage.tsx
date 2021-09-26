@@ -201,7 +201,7 @@ function HomePage() {
             setResultDlg(true);
             console.log("No accepted files!!");
         }
-    }, [gridValues])
+    }, [gridValues, dialogValues])
 
     return (
         <GenericTemplate title="Submit">
