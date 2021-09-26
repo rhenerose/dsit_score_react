@@ -158,6 +158,7 @@ const RankPage: React.FC = () => {
                             <TableCell>ランク</TableCell>
                             <TableCell>ユーザ</TableCell>
                             <TableCell align="right">スコア</TableCell>
+                            <TableCell>更新日時</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -173,6 +174,7 @@ const RankPage: React.FC = () => {
                                     {row.RowKey}
                                 </TableCell>
                                 <TableCell align="right">{Number(row.score).toFixed(3)}</TableCell>
+                                <TableCell >{row.update_dt}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
