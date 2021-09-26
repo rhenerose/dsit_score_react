@@ -12,6 +12,7 @@ import Paper from "@material-ui/core/Paper";
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import * as colors from "@material-ui/core/colors";
+import { useLocation } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     palette: {
@@ -80,13 +81,31 @@ const useStyles = makeStyles((theme) => ({
     table: {
         minWidth: 650,
     },
+    tableRow: {
+        "&$selected, &$selected:hover": {
+            backgroundColor: "purple"
+        }
+    },
+    tableCell: {
+        "$selected &": {
+            color: "yellow"
+        }
+    },
+    selected: {}
 
 }));
 
 const RankPage: React.FC = () => {
+    const location = useLocation<any>();
     const classes = useStyles();
     const [rows, setRows] = React.useState([] as any[]);
     const [isOpen, setIsOpen] = React.useState(false);
+    const email = !location.state ? "" :
+        location.state.email ?
+            location.state.email
+            :
+            ""
+        ;
 
     function apiSuccess(response: any) {
         console.log('Success:', response);
@@ -141,7 +160,7 @@ const RankPage: React.FC = () => {
                     </TableHead>
                     <TableBody>
                         {rows.map((row, idx) => (
-                            <TableRow key={row.RowKey}>
+                            <TableRow key={row.RowKey} selected={email === row.RowKey}>
                                 <TableCell align="left">{idx + 1}</TableCell>
                                 <TableCell component="th" scope="row">
                                     {row.RowKey}
