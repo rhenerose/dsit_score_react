@@ -142,7 +142,7 @@ const RankPage: React.FC = () => {
                     <TableBody>
                         {rows.map((row, idx) => (
                             <TableRow key={row.RowKey}>
-                                <TableCell align="right">{idx + 1}</TableCell>
+                                <TableCell align="left">{idx + 1}</TableCell>
                                 <TableCell component="th" scope="row">
                                     {row.RowKey}
                                 </TableCell>
