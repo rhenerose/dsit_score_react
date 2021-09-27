@@ -225,7 +225,7 @@ const GenericTemplate: React.FC<GenericTemplateProps> = ({
                                 <ListItemIcon>
                                     <FormatListNumberedIcon />
                                 </ListItemIcon>
-                                <ListItemText primary="ランク" />
+                                <ListItemText primary="ランキング" />
                             </ListItem>
                         </Link>
                     </List>
