@@ -80,11 +80,11 @@ const useStyles = makeStyles((theme) => ({
 
     tableContainer: {
         // maxWidth: 550,
-        minWidth: 350,
+        minWidth: 550,
     },
     table: {
-        maxWidth: 500,
-        minWidth: 300,
+        maxWidth: 700,
+        minWidth: 500,
     },
     tableRow: {
         "&$selected, &$selected:hover": {
