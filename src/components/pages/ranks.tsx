@@ -173,7 +173,7 @@ const RankPage: React.FC = () => {
                                 <TableCell component="th" scope="row">
                                     {row.RowKey}
                                 </TableCell>
-                                <TableCell align="right">{Number(row.score).toFixed(3)}</TableCell>
+                                <TableCell align="right">{Number(row.score).toFixed(8)}</TableCell>
                                 <TableCell >{row.update_dt}</TableCell>
                             </TableRow>
                         ))}
