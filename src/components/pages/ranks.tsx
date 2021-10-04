@@ -109,6 +109,12 @@ const RankPage: React.FC = () => {
     const [isOpen, setIsOpen] = React.useState(false);
     const email = location.state ? (location.state.email ?? "") : "";
 
+    const maskedEmail = (email: string): string => {
+        return email.replace(/^(.*)(.@...)(.*)$/,
+            (_, s1, s2, s3) => s1 + s2 + s3.replace(/./g, '*')
+        );
+    }
+
     function apiSuccess(response: any) {
         console.log('Success:', response);
 
@@ -171,7 +177,7 @@ const RankPage: React.FC = () => {
                             >
                                 <TableCell align="left">{idx + 1}</TableCell>
                                 <TableCell component="th" scope="row">
-                                    {row.RowKey}
+                                    {maskedEmail(row.RowKey)}
                                 </TableCell>
                                 <TableCell align="right">{Number(row.score).toFixed(8)}</TableCell>
                                 <TableCell >{row.update_dt}</TableCell>
