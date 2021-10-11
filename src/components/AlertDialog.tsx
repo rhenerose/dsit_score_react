@@ -38,7 +38,7 @@ const AlertDialog: React.FunctionComponent<{ title: any,msg: any, isOpen: any, d
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => doButton1()} autoFocus>
+                    <Button onClick={() => doButton1()} color="primary" autoFocus>
                         OK
                     </Button>
                 </DialogActions>

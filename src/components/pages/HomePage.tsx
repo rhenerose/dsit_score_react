@@ -140,7 +140,7 @@ function HomePage() {
             isBusy ?
                 <CircularProgress size={20} />
             :
-                <IconButton size="medium" color="secondary" onClick={() => commit()} disabled={!commitEnabled}  className={classes.margin}>
+                <IconButton size="medium" color="primary" onClick={() => commit()} disabled={!commitEnabled}  className={classes.margin}>
                     <BackupIcon fontSize="medium"/>
                 </IconButton>
         )
